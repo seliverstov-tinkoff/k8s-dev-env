@@ -1,0 +1,20 @@
+apiVersion: skaffold/v2beta11
+kind: Config
+build:
+  artifacts:
+    - image: dev-env
+      docker:
+        dockerfile: Dockerfile
+  local:
+    push: false
+    useDockerCLI: true
+deploy:
+  kubeContext: docker-desktop
+  kustomize:
+    paths:
+    - "kustomize"
+portForward:
+  - resourceType: deployment
+    resourceName: kustomize-test
+    port: 8080
+    localPort: 8080
