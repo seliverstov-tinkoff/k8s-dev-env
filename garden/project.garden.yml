@@ -1,0 +1,6 @@
+kind: Project
+name: k8s-env-dev
+environments:
+  - name: local
+providers:
+  - name: local-kubernetes

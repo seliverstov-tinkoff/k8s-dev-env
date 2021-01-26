@@ -1,0 +1,79 @@
+kind: Module
+description: hot reload image
+name: dev-env
+type: container
+include: ["*"]
+hotReload:
+  sync:
+    - target: /opt/build/
+---
+
+kind: Module
+description: K8s Module
+name: service
+include: []
+type: kubernetes
+serviceResource:
+  kind: Deployment
+  containerModule: dev-env
+  name: service
+  containerName: service
+manifests:
+  - apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      labels:
+        service: service
+      name: service
+    spec:
+      replicas: 1
+      selector:
+        matchLabels:
+          service: service
+      template:
+        metadata:
+          labels:
+            service: service
+        spec:
+          containers:
+            - image: ${modules.dev-env.outputs.deployment-image-id}
+              imagePullPolicy: IfNotPresent
+              name: service
+              env:
+                - name: FOO
+                  value: garden
+              ports:
+                - containerPort: 8080
+                  name: http
+                  protocol: TCP
+          dnsPolicy: ClusterFirst
+          restartPolicy: Always
+  - apiVersion: v1
+    kind: Service
+    metadata:
+      labels:
+        service: service
+      name: service
+    spec:
+      selector:
+        service: service
+      ports:
+        - name: http
+          port: 8080
+          protocol: TCP
+          targetPort: 8080
+      type: ClusterIP
+  - apiVersion: extensions/v1beta1
+    kind: Ingress
+    metadata:
+      labels:
+        service: service
+      name: service
+    spec:
+      rules:
+        - http:
+            paths:
+              - backend:
+                  serviceName: service
+                  servicePort: 8080
+                path: /hello
