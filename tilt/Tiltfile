@@ -1,0 +1,12 @@
+docker_build(
+    'dev-env',
+    '.',
+    dockerfile='Dockerfile',
+    live_update=[
+        fall_back_on('.')
+    ]
+)
+
+k8s_yaml(kustomize('./kustomize'))
+
+k8s_resource('kustomize-test', port_forwards=8080)
