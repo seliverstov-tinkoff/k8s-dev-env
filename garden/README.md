@@ -1,11 +1,13 @@
 ## Garden
 
-Проект имеет группу конфигурационных файлов
-- project.garden.yml - инициализация проект и провайдеров
-- service.garden.yml - деплоймент и настройки развертывания
+для установки решение воспользуйтесь инструкцией https://docs.garden.io/getting-started/1-installation
 
-запуск проекта `garden dev -hot=service`
+структура тестового проекта:
+* Dockerfile - инструкции по созданию образа
+* main.go - http сервер, который запускается в k8s
+* project.garden.yml - инициализация проект и провайдеров
+* service.garden.yml - деплоймент и настройки развертывания, включает в себя deployment
 
-TODO:
-Горячая замена кода в данный момент не работает, пример проекта на го и garden c горячей заменой кода
-https://github.com/garden-io/go3dprint
+Для запуска проекта:
+* запуск проекта `garden dev` (Эта версия не имеет hot reload)
+* открываем `localhost/hello` или `http://127.0.0.1:8080/`

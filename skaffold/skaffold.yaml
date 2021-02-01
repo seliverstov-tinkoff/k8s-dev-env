@@ -2,19 +2,24 @@ apiVersion: skaffold/v2beta11
 kind: Config
 build:
   artifacts:
+    # имя докер файла, которое будет предоставленно образу после перезборки
     - image: dev-env
       docker:
         dockerfile: Dockerfile
+  # конфиг преднастроен для использования локального docker registry
   local:
     push: false
     useDockerCLI: true
 deploy:
+  # контекст кластера, можно посмотреть с помощью kubectl config get-contexts
   kubeContext: docker-desktop
   kustomize:
     paths:
+    # путь до спецификаций этого сервиса, например ../local-development/services/myservice
     - "kustomize"
 portForward:
   - resourceType: deployment
+    # имя ресурса, должен совпадать с metadata.name deployment сервиса
     resourceName: kustomize-test
     port: 8080
     localPort: 8080

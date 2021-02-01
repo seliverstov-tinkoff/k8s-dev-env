@@ -1,3 +1,4 @@
+# собираем образ с именем dev-env каждый раз, когда происходит любое изменение в папке
 docker_build(
     'dev-env',
     '.',
@@ -7,6 +8,8 @@ docker_build(
     ]
 )
 
+# собираем специйикации с помощью kustomize и применяем их
 k8s_yaml(kustomize('./kustomize'))
 
+# проброc портов для deployment
 k8s_resource('kustomize-test', port_forwards=8080)
